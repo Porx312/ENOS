@@ -5,7 +5,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { UtmCapture } from "@/components/utm-capture";
 import { WhatsAppFloat } from "@/components/whatsapp-float";
-import { company, siteUrl } from "@/lib/site";
+import { company, contactAddress, contactEmail, phoneDisplay, siteUrl, whatsappNumber } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({
@@ -23,11 +23,12 @@ const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim() ?? "";
 const gaId = process.env.NEXT_PUBLIC_GA_ID?.trim() ?? "";
 const pixelOk = /^\d{5,20}$/.test(pixelId);
 const gaOk = /^G-[A-Z0-9]+$/.test(gaId);
+const base = siteUrl();
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl()),
+  metadataBase: new URL(base),
   title: {
-    default: company.name,
+    default: `${company.name} · Equipos, suministros y soporte operacional`,
     template: `%s · ${company.name}`,
   },
   description: company.description,
@@ -35,21 +36,42 @@ export const metadata: Metadata = {
     locale: "es_VE",
     siteName: company.name,
     type: "website",
+    url: base,
     images: [{ url: "/images/hero.jpg", width: 1600, height: 900, alt: company.name }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: company.name,
+    description: company.description,
+    images: ["/images/hero.jpg"],
   },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  const phone = phoneDisplay();
+  const email = contactEmail();
+  const address = contactAddress();
+  const wa = whatsappNumber();
   const org = {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: company.legalName,
     description: company.description,
-    url: siteUrl(),
-    ...(process.env.NEXT_PUBLIC_PHONE_DISPLAY
-      ? { telephone: process.env.NEXT_PUBLIC_PHONE_DISPLAY }
+    url: base,
+    areaServed: company.region,
+    ...(phone ? { telephone: phone } : {}),
+    ...(email ? { email } : {}),
+    ...(address ? { address: { "@type": "PostalAddress", streetAddress: address } } : {}),
+    ...(wa
+      ? {
+          contactPoint: {
+            "@type": "ContactPoint",
+            contactType: "sales",
+            telephone: `+${wa}`,
+            availableLanguage: ["Spanish"],
+          },
+        }
       : {}),
-    ...(process.env.NEXT_PUBLIC_EMAIL ? { email: process.env.NEXT_PUBLIC_EMAIL } : {}),
   };
 
   return (

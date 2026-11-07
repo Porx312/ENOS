@@ -36,22 +36,40 @@ export function whatsappHref(message: string) {
   return number ? `https://wa.me/${number}?text=${text}` : "";
 }
 
-export function siteUrl() {
-  const value = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  if (!value) return "http://localhost:3000";
+function originFrom(value: string) {
   try {
-    return new URL(value).origin;
+    const withProtocol = /^https?:\/\//i.test(value) ? value : `https://${value}`;
+    return new URL(withProtocol).origin;
   } catch {
-    return "http://localhost:3000";
+    return "";
   }
 }
 
+export function siteUrl() {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim() ?? "";
+  const configuredOrigin = configured ? originFrom(configured) : "";
+  const isLocal =
+    !configuredOrigin ||
+    configuredOrigin.includes("localhost") ||
+    configuredOrigin.includes("127.0.0.1");
+
+  if (configuredOrigin && !isLocal) return configuredOrigin;
+
+  const vercel =
+    process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim() ||
+    process.env.NEXT_PUBLIC_VERCEL_URL?.trim() ||
+    process.env.VERCEL_URL?.trim() ||
+    "";
+  const vercelOrigin = vercel ? originFrom(vercel) : "";
+  if (vercelOrigin) return vercelOrigin;
+
+  return configuredOrigin || "http://localhost:3000";
+}
+
 export const navLinks = [
-  { href: "/#inicio", label: "Inicio" },
-  { href: "/#nosotros", label: "Nosotros" },
-  { href: "/#servicios", label: "Servicios" },
-  { href: "/#productos", label: "Productos" },
-  { href: "/#contacto", label: "Contacto" },
+  { href: "/", label: "Inicio" },
+  { href: "/empresa", label: "Empresa" },
+  { href: "/contacto", label: "Contacto" },
 ] as const;
 
 export const serviceLinks = [
@@ -60,4 +78,11 @@ export const serviceLinks = [
   { href: "/epp", label: "Equipos de protección personal" },
   { href: "/maquinaria", label: "Venta de equipos" },
   { href: "/servicios", label: "Servicios en sitio" },
+] as const;
+
+export const alquilerSubLinks = [
+  { href: "/alquiler/vacuum-cisternas", label: "Vacuum y cisternas" },
+  { href: "/alquiler/gruas", label: "Grúas industriales" },
+  { href: "/alquiler/soldadura", label: "Soldadura" },
+  { href: "/alquiler/transporte", label: "Transporte y campamentos" },
 ] as const;

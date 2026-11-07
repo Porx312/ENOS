@@ -24,6 +24,13 @@ export const homeServices = [
     image: images.epp,
   },
   {
+    title: "Venta de equipos",
+    text: "Maquinaria y equipos para producción, mantenimiento y refinación.",
+    href: "/maquinaria",
+    tipo: "equipos" as RequestTypeId,
+    image: images.alquiler,
+  },
+  {
     title: "Servicios en sitio",
     text: "Asistencia técnica y soporte especializado directamente en las instalaciones del cliente.",
     href: "/servicios",

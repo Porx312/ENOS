@@ -84,23 +84,23 @@ const alquilerBase: ExtraField[] = [
   {
     name: "sitio_operacion",
     label: "Ubicación del sitio",
-    type: "text",
+    type: "textarea",
     required: true,
-    placeholder: "Campo, planta o coordenada de referencia",
+    placeholder: "Estado, municipio, campo o planta. Con esto confirmamos si podemos atender esa zona.",
   },
   { name: "fecha_inicio", label: "Fecha de inicio", type: "date", required: true },
   {
     name: "duracion",
     label: "Duración estimada",
     type: "text",
-    required: true,
-    placeholder: "Ej. 15 días",
+    required: false,
+    placeholder: "Opcional · Ej. 15 días",
   },
   {
     name: "operador",
     label: "¿Requiere operador?",
     type: "select",
-    required: true,
+    required: false,
     options: ["Sí, con operador", "No", "Por confirmar"],
   },
 ];
@@ -263,8 +263,8 @@ export const landings: Landing[] = [
         name: "volumen",
         label: "Volumen estimado",
         type: "text",
-        required: true,
-        placeholder: "Ej. 80 barriles o 3 viajes",
+        required: false,
+        placeholder: "Opcional · Ej. 80 barriles o 3 viajes",
       },
       ...alquilerBase,
     ],
@@ -424,7 +424,7 @@ export const landings: Landing[] = [
         name: "tipo_trabajo",
         label: "Tipo de trabajo",
         type: "select",
-        required: true,
+        required: false,
         options: ["Tubería", "Estructura", "Tubería y estructura", "Otro"],
       },
       ...alquilerBase,
@@ -505,14 +505,14 @@ export const landings: Landing[] = [
         name: "tipo_carga",
         label: "Tipo de carga",
         type: "text",
-        required: true,
-        placeholder: "Ej. tubería, personal, equipo de izaje",
+        required: false,
+        placeholder: "Opcional · Ej. tubería, personal, equipo de izaje",
       },
       {
         name: "campamento",
         label: "¿Necesita campamento móvil?",
         type: "select",
-        required: true,
+        required: false,
         options: ["Sí", "No", "Por confirmar"],
       },
       ...alquilerBase,
@@ -603,9 +603,9 @@ export const landings: Landing[] = [
       {
         name: "entrega",
         label: "Lugar de entrega",
-        type: "text",
+        type: "textarea",
         required: true,
-        placeholder: "Planta, almacén o sitio de la operación",
+        placeholder: "Estado, municipio, planta o almacén. Con esto confirmamos si podemos atender esa zona.",
       },
     ],
     related: [
@@ -699,7 +699,8 @@ export const landings: Landing[] = [
         name: "norma",
         label: "Norma o especificación",
         type: "text",
-        placeholder: "Si ya la tiene el contrato",
+        required: false,
+        placeholder: "Opcional · Si ya la tiene el contrato",
       },
       {
         name: "fecha_sitio",
@@ -783,22 +784,22 @@ export const landings: Landing[] = [
         name: "capacidad",
         label: "Capacidad",
         type: "text",
-        required: true,
-        placeholder: "La capacidad que exige el trabajo",
+        required: false,
+        placeholder: "Opcional · La capacidad que exige el trabajo",
       },
       {
         name: "condicion",
         label: "Condición buscada",
         type: "select",
-        required: true,
+        required: false,
         options: ["Nueva", "Usada", "La que tengan disponible"],
       },
       {
         name: "plazo",
         label: "Plazo",
         type: "text",
-        required: true,
-        placeholder: "Ej. antes de la parada de marzo",
+        required: false,
+        placeholder: "Opcional · Ej. antes de la parada de marzo",
       },
     ],
     related: [
@@ -873,6 +874,13 @@ export const landings: Landing[] = [
         placeholder: "Qué hay que resolver en campo",
       },
       {
+        name: "sitio_operacion",
+        label: "Ubicación del sitio",
+        type: "textarea",
+        required: true,
+        placeholder: "Estado, municipio, campo o planta. Con esto confirmamos si podemos atender esa zona.",
+      },
+      {
         name: "fecha",
         label: "Fecha",
         type: "date",
@@ -882,7 +890,7 @@ export const landings: Landing[] = [
         name: "especificacion",
         label: "¿Tiene especificación técnica?",
         type: "select",
-        required: true,
+        required: false,
         options: ["Sí, la compartiré por WhatsApp", "No", "Está en borrador"],
       },
     ],
@@ -924,8 +932,13 @@ export const landings: Landing[] = [
         href: "/epp",
       },
       {
-        title: "Comprar maquinaria o pedir un servicio",
-        text: "Equipos de producción o soporte operacional en campo.",
+        title: "Comprar maquinaria",
+        text: "Equipos de producción, mantenimiento y refinación.",
+        href: "/maquinaria",
+      },
+      {
+        title: "Pedir un servicio",
+        text: "Soporte operacional en campo.",
         href: "/servicios",
       },
     ],
@@ -937,7 +950,7 @@ export const landings: Landing[] = [
       },
       {
         title: "Datos para cotizar",
-        text: "Empresa, sitio y urgencia evitan una conversación de ida y vuelta.",
+        text: "Empresa, zona y urgencia evitan una conversación de ida y vuelta.",
       },
       {
         title: "WhatsApp si prefiere escribir",
@@ -951,11 +964,11 @@ export const landings: Landing[] = [
     faqs: [plazo, cobertura],
     fields: [
       {
-        name: "necesidad",
-        label: "Qué necesita cotizar",
+        name: "cobertura",
+        label: "Ubicación / zona de la operación",
         type: "textarea",
         required: true,
-        placeholder: "Equipo, insumo o trabajo, con el dato que ya tenga",
+        placeholder: "Estado, municipio, campo o planta. Confirmamos si podemos atender esa zona.",
       },
     ],
     related: [
@@ -975,37 +988,3 @@ export function getLanding(path: string) {
 export function landingParams() {
   return landings.map((landing) => ({ slug: landing.path.split("/") }));
 }
-
-export const urgencyOptions = [
-  "Urgente, esta semana",
-  "Este mes",
-  "En planificación",
-] as const;
-
-export const doors = [
-  {
-    index: "01",
-    title: "Alquilar equipos",
-    text: "Vacuum, grúas con operador, soldadura y transporte de campo.",
-    href: "/alquiler",
-  },
-  {
-    index: "02",
-    title: "Comprar suministros y EPP",
-    text: "Repuestos, procura internacional y protección para el personal.",
-    href: "/suministros",
-    secondary: { href: "/epp", label: "Ver EPP y HSE" },
-  },
-  {
-    index: "03",
-    title: "Comprar maquinaria",
-    text: "Venta y comercialización de maquinaria pesada para la operación.",
-    href: "/maquinaria",
-  },
-  {
-    index: "04",
-    title: "Solicitar un servicio",
-    text: "Soporte operacional y logística cuando el trabajo es en campo.",
-    href: "/servicios",
-  },
-] as const;

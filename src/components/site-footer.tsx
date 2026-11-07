@@ -1,11 +1,22 @@
 import Link from "next/link";
-import { company, contactAddress, contactEmail, navLinks, phoneDisplay, serviceLinks, socialLinks } from "@/lib/site";
+import {
+  company,
+  contactAddress,
+  contactEmail,
+  navLinks,
+  phoneDisplay,
+  serviceLinks,
+  socialLinks,
+  whatsappHref,
+} from "@/lib/site";
 
 export function SiteFooter() {
   const phone = phoneDisplay();
   const email = contactEmail();
   const address = contactAddress();
   const social = socialLinks();
+  const wa = whatsappHref("Hola, quiero cotizar con Energía Nuevo Oriente.");
+
   return (
     <footer className="bg-petroleum text-white">
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 md:grid-cols-[1.3fr_1fr_1fr_1fr]">
@@ -33,7 +44,7 @@ export function SiteFooter() {
         </div>
 
         <div>
-          <p className="text-sm font-semibold tracking-wide text-orange uppercase">Servicios</p>
+          <p className="text-sm font-semibold tracking-wide text-orange uppercase">Soluciones</p>
           <ul className="mt-4 space-y-2 text-sm text-white/80">
             {serviceLinks.map((link) => (
               <li key={link.href}>
@@ -57,7 +68,20 @@ export function SiteFooter() {
               </li>
             ) : null}
             {address ? <li>{address}</li> : null}
-            {!phone && !email && !address ? <li>Configure el contacto en variables de entorno.</li> : null}
+            {wa ? (
+              <li>
+                <a href={wa} target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                  WhatsApp comercial
+                </a>
+              </li>
+            ) : null}
+            {!phone && !email && !address && !wa ? (
+              <li>
+                <Link href="/contacto" className="hover:text-white">
+                  Pedir cotización
+                </Link>
+              </li>
+            ) : null}
           </ul>
           {social.length > 0 ? (
             <ul className="mt-4 flex flex-wrap gap-3 text-sm">
@@ -75,9 +99,7 @@ export function SiteFooter() {
 
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-5 text-xs text-white/55 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © 2026 {company.legalName}. Todos los derechos reservados.
-          </p>
+          <p>© 2026 {company.legalName}. Todos los derechos reservados.</p>
           <Link href="/privacidad" className="hover:text-white">
             Aviso de privacidad
           </Link>

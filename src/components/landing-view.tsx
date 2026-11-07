@@ -126,25 +126,21 @@ export function LandingView({ landing }: { landing: Landing }) {
         </Section>
 
         <section className="bg-mist">
-          <div className="mx-auto grid max-w-6xl gap-8 px-5 py-14 lg:grid-cols-[0.8fr_1.2fr]">
+          <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-5 py-14 sm:flex-row sm:items-center">
             <div>
               <h2 className="font-display text-3xl font-bold tracking-tight text-petroleum sm:text-4xl">
                 Listo para cotizar
               </h2>
-              <p className="mt-3 text-muted">
-                Deje los datos aquí. La solicitud se abre en WhatsApp con el contexto de esta línea.
+              <p className="mt-3 max-w-xl text-muted">
+                Use el formulario de esta página. La solicitud se abre en WhatsApp con el contexto de esta línea.
               </p>
             </div>
-            <Suspense fallback={<div className="rounded-lg bg-paper p-6">Cargando formulario…</div>}>
-              <LeadForm
-                id="cotizar-cierre"
-                title="Datos para la cotización"
-                fixedType={landing.requestType}
-                extraFields={landing.fields}
-                lineLabel={landing.line}
-                whatsappIntro={landing.whatsappMessage}
-              />
-            </Suspense>
+            <a
+              href="#cotizar"
+              className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-md bg-orange px-5 font-semibold text-petroleum hover:bg-orange-hover"
+            >
+              Ir al formulario
+            </a>
           </div>
         </section>
 

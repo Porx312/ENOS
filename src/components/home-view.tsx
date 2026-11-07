@@ -13,10 +13,14 @@ import { Reveal } from "@/components/reveal";
 import { TrackView } from "@/components/track-view";
 import { differentiators, homeServices, products } from "@/lib/content";
 import { images } from "@/lib/images";
+import { contactEmail, phoneDisplay } from "@/lib/site";
 
 const icons = [Headset, Wrench, Package, HardHat];
 
 export function HomeView() {
+  const phone = phoneDisplay();
+  const email = contactEmail();
+
   return (
     <>
       <TrackView line="Portada" />
@@ -45,7 +49,7 @@ export function HomeView() {
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link
-                  href="/#contacto"
+                  href="/contacto"
                   className="inline-flex min-h-12 items-center justify-center rounded-md bg-orange px-5 font-semibold text-petroleum transition hover:bg-orange-hover"
                 >
                   Pedir cotización
@@ -68,10 +72,10 @@ export function HomeView() {
                 Soluciones para cada necesidad operativa
               </h2>
               <p className="mt-3 max-w-2xl text-muted">
-                Todo lo que necesitas para mantener tus proyectos y operaciones en funcionamiento.
+                Todo lo que necesita para mantener proyectos y operaciones en funcionamiento.
               </p>
             </Reveal>
-            <div className="mt-10 grid gap-6 md:grid-cols-2">
+            <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {homeServices.map((service) => (
                 <Reveal key={service.href} as="article" className="group overflow-hidden rounded-lg border border-line bg-paper">
                   <div className="relative h-52 overflow-hidden">
@@ -120,10 +124,10 @@ export function HomeView() {
                 continuidad operativa de nuestros clientes.
               </p>
               <Link
-                href="/servicios"
+                href="/empresa"
                 className="mt-7 inline-flex min-h-12 items-center rounded-md bg-petroleum px-5 font-semibold text-white transition hover:bg-petroleum-hover"
               >
-                Conocer más
+                Conocer la empresa
               </Link>
             </Reveal>
           </div>
@@ -206,7 +210,7 @@ export function HomeView() {
               </p>
             </div>
             <Link
-              href="/#contacto"
+              href="/contacto"
               className="inline-flex min-h-12 shrink-0 items-center rounded-md bg-orange px-5 font-semibold text-petroleum transition hover:bg-orange-hover"
             >
               Solicitar cotización
@@ -222,9 +226,27 @@ export function HomeView() {
                 Envíe su solicitud
               </h2>
               <p className="mt-4 text-muted">
-                Indique el tipo de necesidad. La solicitud llega al departamento comercial correspondiente y se abre
-                WhatsApp con el resumen para agilizar la respuesta.
+                Indique el tipo de necesidad y la zona. La solicitud llega al departamento comercial y se abre WhatsApp
+                con el resumen para agilizar la respuesta.
               </p>
+              <ul className="mt-6 space-y-2 text-sm text-petroleum">
+                {phone ? <li>Teléfono: {phone}</li> : null}
+                {email ? (
+                  <li>
+                    Correo:{" "}
+                    <a href={`mailto:${email}`} className="font-semibold hover:underline">
+                      {email}
+                    </a>
+                  </li>
+                ) : null}
+                <li>
+                  También puede usar la página de{" "}
+                  <Link href="/contacto" className="font-semibold hover:underline">
+                    cotización
+                  </Link>
+                  .
+                </li>
+              </ul>
             </Reveal>
             <Reveal>
               <Suspense fallback={<div className="rounded-lg border border-line bg-paper p-6">Cargando formulario…</div>}>

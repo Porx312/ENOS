@@ -13,7 +13,7 @@ export default function NotFound() {
           Ir al inicio
         </Link>
         <Link
-          href="/#contacto"
+          href="/contacto"
           className="inline-flex min-h-12 items-center rounded-md border border-line px-5 font-semibold text-petroleum"
         >
           Pedir cotización

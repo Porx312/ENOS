@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle2, Package, X } from "lucide-react";
@@ -12,6 +13,14 @@ import { WhatsAppLink } from "@/components/whatsapp-link";
 const inputClass =
   "mt-1 w-full rounded-md border border-line bg-paper px-3 py-3 text-base text-ink outline-none focus:border-petroleum";
 const errorClass = "border-orange";
+
+const coverageField: ExtraField = {
+  name: "cobertura",
+  label: "Ubicación / zona de la operación",
+  type: "textarea",
+  required: true,
+  placeholder: "Estado, municipio, campo o planta. Confirmamos si podemos atender esa zona.",
+};
 
 type Props = {
   id?: string;
@@ -28,6 +37,13 @@ function digits(value: string) {
   return value.replace(/\D/g, "");
 }
 
+function hasCoverageField(fields: ExtraField[]) {
+  return fields.some(
+    (field) =>
+      field.name === "sitio_operacion" || field.name === "entrega" || field.name === "cobertura",
+  );
+}
+
 export function LeadForm({
   id = "contacto",
   title = "Solicitar cotización",
@@ -40,9 +56,15 @@ export function LeadForm({
   const [pending, setPending] = useState(false);
   const [done, setDone] = useState(false);
   const [message, setMessage] = useState("");
+  const [mailNote, setMailNote] = useState("");
   const [errors, setErrors] = useState<Errors>({});
   const [tipo, setTipo] = useState<RequestTypeId>(fixedType ?? "otra");
   const [producto, setProducto] = useState("");
+
+  const fields = useMemo(
+    () => (hasCoverageField(extraFields) ? extraFields : [...extraFields, coverageField]),
+    [extraFields],
+  );
 
   useEffect(() => {
     if (fixedType) {
@@ -76,7 +98,7 @@ export function LeadForm({
     }
     if (descripcion.length < 20) next.descripcion = "Describa la necesidad con al menos 20 caracteres.";
 
-    for (const field of extraFields) {
+    for (const field of fields) {
       if (field.type === "hidden") continue;
       const value = String(form.get(field.name) ?? "").trim();
       if (field.required && !value) next[field.name] = `Indique ${field.label.toLowerCase()}.`;
@@ -101,7 +123,7 @@ export function LeadForm({
     setErrors((prev) => ({ ...prev, [target.name]: next[target.name] }));
   }
 
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
@@ -123,7 +145,7 @@ export function LeadForm({
       `Teléfono: ${String(data.get("telefono")).trim()}`,
     ];
     if (producto) lines.push(`Producto: ${producto}`);
-    for (const field of extraFields) {
+    for (const field of fields) {
       const value =
         field.type === "hidden" ? (field.value ?? "") : String(data.get(field.name) ?? "").trim();
       extras[field.name] = value;
@@ -141,32 +163,55 @@ export function LeadForm({
     }
 
     setPending(true);
+    setMailNote("");
     sessionStorage.setItem(QUOTE_MESSAGE_KEY, composed);
     sessionStorage.setItem(LEAD_PENDING_KEY, lineLabel);
     track("whatsapp_click", lineLabel);
     track("generate_lead", lineLabel);
 
-    void fetch("/api/leads", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      keepalive: true,
-      body: JSON.stringify({
-        line: lineLabel,
-        path: typeof window !== "undefined" ? window.location.pathname : "/",
-        tipo: selectedTipo,
-        department: selected.department,
-        nombre: data.get("nombre"),
-        empresa: data.get("empresa"),
-        correo: data.get("correo"),
-        telefono: data.get("telefono"),
-        producto,
-        descripcion: data.get("descripcion"),
-        extras,
-        utm: readUtm(),
-        company_website: data.get("company_website"),
-      }),
-    });
+    let note =
+      "Abriremos WhatsApp con el resumen. Si el mensaje no se envió, use el botón de abajo.";
+    try {
+      const response = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        keepalive: true,
+        body: JSON.stringify({
+          line: lineLabel,
+          path: typeof window !== "undefined" ? window.location.pathname : "/",
+          tipo: selectedTipo,
+          department: selected.department,
+          nombre: data.get("nombre"),
+          empresa: data.get("empresa"),
+          correo: data.get("correo"),
+          telefono: data.get("telefono"),
+          producto,
+          descripcion: data.get("descripcion"),
+          extras,
+          utm: readUtm(),
+          company_website: data.get("company_website"),
+        }),
+      });
+      const payload = (await response.json().catch(() => null)) as
+        | { ok?: boolean; delivered?: boolean; error?: string }
+        | null;
+      if (!response.ok) {
+        note =
+          payload?.error ||
+          "No pudimos registrar el correo interno. Complete el envío por WhatsApp para que el equipo reciba la solicitud.";
+      } else if (payload?.delivered === false) {
+        note =
+          "WhatsApp queda listo con su resumen. El correo interno no está configurado todavía; el canal principal es WhatsApp.";
+      } else {
+        note =
+          `El departamento de ${selected.department} recibirá los datos. Si WhatsApp no se abrió, use el botón siguiente.`;
+      }
+    } catch {
+      note =
+        "No pudimos confirmar el registro interno. Envíe el mensaje por WhatsApp para que el equipo comercial lo reciba.";
+    }
 
+    setMailNote(note);
     setMessage(composed);
     setDone(true);
     window.open(href, "_blank", "noopener,noreferrer");
@@ -180,12 +225,9 @@ export function LeadForm({
           <CheckCircle2 className="mt-1 h-6 w-6 text-orange" />
           <div>
             <h2 className="font-display text-3xl font-semibold tracking-tight text-petroleum">
-              Recibimos su solicitud
+              Solicitud lista para enviar
             </h2>
-            <p className="mt-3 text-sm leading-6 text-muted">
-              El departamento de {request.department} revisará los datos. Si WhatsApp no se abrió, use el botón
-              siguiente para enviar el mensaje con la información ya escrita.
-            </p>
+            <p className="mt-3 text-sm leading-6 text-muted">{mailNote}</p>
             <WhatsAppLink
               message={message}
               line={lineLabel}
@@ -286,7 +328,7 @@ export function LeadForm({
         {fixedType ? (
           <input type="hidden" name="tipo" value={fixedType} />
         ) : (
-          <label className="block text-sm font-semibold sm:col-span-2">
+          <label className="block text-sm font-semibold text-ink sm:col-span-2">
             Tipo de solicitud
             <select
               className={`${inputClass} ${errors.tipo ? errorClass : ""}`}
@@ -306,11 +348,11 @@ export function LeadForm({
           </label>
         )}
 
-        {extraFields.map((field) => (
+        {fields.map((field) => (
           <ExtraFieldInput key={field.name} id={id} field={field} error={errors[field.name]} />
         ))}
 
-        <label className="block text-sm font-semibold sm:col-span-2">
+        <label className="block text-sm font-semibold text-ink sm:col-span-2">
           Descripción de la necesidad
           <textarea
             id={`${id}-descripcion`}
@@ -320,8 +362,8 @@ export function LeadForm({
             rows={4}
             placeholder={
               producto
-                ? `Necesito cotizar: ${producto}. Indique cantidad, sitio y urgencia.`
-                : "Indique equipo, suministro o servicio, cantidad, sitio y urgencia."
+                ? `Necesito cotizar: ${producto}. Indique cantidad, urgencia y, si aplica, duración u operador.`
+                : "Indique equipo, suministro o servicio, cantidad, urgencia y, si aplica, duración u operador."
             }
             aria-invalid={Boolean(errors.descripcion)}
           />
@@ -346,7 +388,11 @@ export function LeadForm({
         {pending ? "Enviando…" : "Enviar solicitud"}
       </button>
       <p className="mt-3 text-xs leading-5 text-muted">
-        Al enviar acepta el tratamiento de sus datos para cotizar esta solicitud, según el aviso de privacidad.
+        Al enviar acepta el tratamiento de sus datos para cotizar esta solicitud, según el{" "}
+        <Link href="/privacidad" className="font-semibold text-petroleum underline-offset-2 hover:underline">
+          aviso de privacidad
+        </Link>
+        .
       </p>
     </form>
   );
@@ -373,7 +419,7 @@ function Field({
   error?: string;
 }) {
   return (
-    <label className={`block text-sm font-semibold ${className}`}>
+    <label className={`block text-sm font-semibold text-ink ${className}`}>
       {label}
       <input
         id={`${id}-${name}`}
@@ -402,10 +448,17 @@ function ExtraFieldInput({
   }
 
   const wide = field.type === "textarea";
+  const optionalHint = field.required === false ? " (opcional)" : "";
+  const locationLike =
+    field.name === "sitio_operacion" ||
+    field.name === "entrega" ||
+    field.name === "cobertura" ||
+    field.name.includes("ubicacion");
 
   return (
-    <label className={`block text-sm font-semibold ${wide ? "sm:col-span-2" : ""}`}>
+    <label className={`block text-sm font-semibold text-ink ${wide ? "sm:col-span-2" : ""}`}>
       {field.label}
+      {optionalHint}
       {field.type === "textarea" ? (
         <textarea
           id={`${id}-${field.name}`}
@@ -413,7 +466,7 @@ function ExtraFieldInput({
           name={field.name}
           required={field.required}
           placeholder={field.placeholder}
-          rows={4}
+          rows={locationLike ? 3 : 4}
           aria-invalid={Boolean(error)}
         />
       ) : field.type === "select" ? (
@@ -425,8 +478,8 @@ function ExtraFieldInput({
           defaultValue=""
           aria-invalid={Boolean(error)}
         >
-          <option value="" disabled>
-            Seleccione
+          <option value="" disabled={Boolean(field.required)}>
+            {field.required ? "Seleccione" : "Sin indicar"}
           </option>
           {field.options?.map((option) => (
             <option key={option}>{option}</option>
