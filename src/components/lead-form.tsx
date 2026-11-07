@@ -175,7 +175,7 @@ export function LeadForm({
 
   if (done) {
     return (
-      <div id={id} className="rounded-lg border border-line bg-paper p-6 shadow-sm">
+      <div id={id} className="rounded-lg border border-line bg-paper p-6 text-ink shadow-sm">
         <div className="flex items-start gap-3">
           <CheckCircle2 className="mt-1 h-6 w-6 text-orange" />
           <div>
@@ -204,7 +204,7 @@ export function LeadForm({
       id={id}
       onSubmit={onSubmit}
       onBlur={onBlur}
-      className="relative rounded-lg border border-line bg-paper p-5 shadow-sm sm:p-6"
+      className="relative rounded-lg border border-line bg-paper p-5 text-ink shadow-sm sm:p-6"
       noValidate
     >
       <h2 className="font-display text-3xl font-semibold tracking-tight text-petroleum">{title}</h2>
