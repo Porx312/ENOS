@@ -72,7 +72,7 @@ const steps: InfoCard[] = [
   },
   {
     title: "Reciba la cotización",
-    text: "El equipo comercial responde por WhatsApp o correo con alcance, condiciones y plazo.",
+    text: "El equipo comercial responde por WhatsApp o correo en horario laboral, normalmente en menos de 30 minutos, con alcance, condiciones y plazo.",
   },
   {
     title: "Ejecución en sitio",
@@ -111,11 +111,11 @@ export const landings: Landing[] = [
     line: "Alquiler de equipos",
     metaTitle: "Alquiler de maquinaria y equipos",
     metaDescription:
-      "Cotice vacuum, grúas con operador certificado, soldadura y transporte de campo para operaciones energéticas e industriales.",
+      "Cotice vacuum, grúas con operador certificado, soldadura y transporte de campo para operaciones energéticas en el oriente.",
     eyebrow: "Alquiler",
     title: "Maquinaria y equipos para su operación",
     subtitle:
-      "Vacuum y cisternas, grúas con operador certificado, soldadura de alta capacidad y transporte de campo. Elija la línea y pida la cotización.",
+      "Vacuum y cisternas, grúas con operador certificado, soldadura y transporte de campo para industria energética en el oriente. Respondemos en horario comercial. Indique sitio, fecha y capacidad.",
     whatsappMessage: "Hola, quiero cotizar alquiler de equipos.",
     requestType: "alquiler",
     imageKey: "alquiler",
@@ -202,11 +202,11 @@ export const landings: Landing[] = [
     eyebrow: "Alquiler · Vacuum y cisternas",
     title: "Vacuum y cisternas para efluentes e hidrocarburos",
     subtitle:
-      "Manejo, transporte y disposición. Indique el fluido, el volumen y el sitio para preparar la cotización.",
+      "Manejo, transporte y disposición en el oriente. Respondemos en horario comercial. Indique fluido, volumen, sitio y fecha.",
     whatsappMessage: "Hola, quiero cotizar alquiler de vacuum o cisterna.",
     requestType: "alquiler",
     imageKey: "vacuum",
-    trust: ["Efluentes e hidrocarburos", "Transporte", "Disposición", "Entrega en sitio"],
+    trust: ["Efluentes e hidrocarburos", "Oriente", "Disposición", "Entrega en sitio"],
     audience,
     offers: [
       {
@@ -279,15 +279,15 @@ export const landings: Landing[] = [
     line: "Alquiler de grúas",
     metaTitle: "Alquiler de grúas industriales",
     metaDescription:
-      "Cotice grúas industriales para izaje de carga pesada, con operador certificado.",
+      "Cotice grúas industriales para izaje de carga pesada, con operador certificado, en el oriente del país.",
     eyebrow: "Alquiler · Grúas",
     title: "Grúas industriales con operador certificado",
     subtitle:
-      "Izaje de carga pesada para montaje, mantenimiento y paradas. Indique la capacidad, el sitio y la fecha.",
+      "Izaje de carga pesada para montaje, mantenimiento y paradas en el oriente. Respondemos en horario comercial. Indique capacidad, sitio y fecha.",
     whatsappMessage: "Hola, quiero cotizar alquiler de grúa.",
     requestType: "alquiler",
     imageKey: "gruas",
-    trust: ["Operador certificado", "Carga pesada", "Izaje", "Prioridad HSE"],
+    trust: ["Operador certificado", "Carga pesada", "Oriente", "Prioridad HSE"],
     audience,
     offers: [
       {
@@ -536,7 +536,7 @@ export const landings: Landing[] = [
     whatsappMessage: "Hola, quiero cotizar un suministro o repuesto.",
     requestType: "repuestos",
     imageKey: "suministros",
-    trust: ["Repuestos originales", "Procura internacional", "Entrega en sitio", "Mantenimiento y refinación"],
+    trust: ["Originales cuando aplica", "Procura internacional", "Entrega en sitio", "Mantenimiento y refinación"],
     audience,
     offers: [
       {

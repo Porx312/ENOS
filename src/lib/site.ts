@@ -3,8 +3,13 @@ export const company = {
   legalName: "Energía Nuevo Oriente, S.A.",
   region: "Oriente del país",
   description:
-    "Procura, alquiler de equipos y soporte operacional para la industria energética, petrolera e industrial.",
+    "Procura, alquiler de equipos y soporte operacional para la industria energética, petrolera e industrial en el oriente del país.",
 };
+
+/** Compromiso comercial público (horario laboral). Ajustable por env. */
+export const commercialSla =
+  process.env.NEXT_PUBLIC_COMMERCIAL_SLA?.trim() ||
+  "Respondemos en horario comercial, normalmente en menos de 30 minutos.";
 
 export function phoneDisplay() {
   return process.env.NEXT_PUBLIC_PHONE_DISPLAY?.trim() ?? "";
@@ -16,6 +21,10 @@ export function contactEmail() {
 
 export function contactAddress() {
   return process.env.NEXT_PUBLIC_ADDRESS?.trim() ?? "";
+}
+
+export function companyRif() {
+  return process.env.NEXT_PUBLIC_RIF?.trim() ?? "";
 }
 
 export function socialLinks() {

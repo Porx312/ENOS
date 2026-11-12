@@ -1,51 +1,51 @@
 export const images = {
   hero: {
-    src: "/images/hero.jpg",
-    alt: "Instalación energética e industrial al atardecer",
+    src: "/images/hero.png",
+    alt: "Excavadora, bomba petrolera, pala cargadora y grúa móvil",
   },
   about: {
-    src: "/images/about.jpg",
-    alt: "Infraestructura industrial y energética",
+    src: "/images/about-v2.jpg",
+    alt: "Planta energética e industrial al atardecer",
   },
   alquiler: {
-    src: "/images/service-alquiler.jpg",
-    alt: "Maquinaria pesada en operación industrial",
+    src: "/images/service-alquiler-v2.jpg",
+    alt: "Excavadora amarilla en obra para alquiler",
   },
   suministros: {
-    src: "/images/service-suministros.jpg",
-    alt: "Suministros y componentes industriales",
+    src: "/images/service-suministros-v2.jpg",
+    alt: "Almacén de repuestos y suministros industriales",
   },
   epp: {
-    src: "/images/service-epp.jpg",
-    alt: "Trabajadores con equipos de protección personal",
+    src: "/images/service-epp-v2.jpg",
+    alt: "Equipos de protección personal industriales",
   },
   servicios: {
-    src: "/images/service-campo.jpg",
-    alt: "Soporte técnico en instalaciones industriales",
+    src: "/images/service-campo-v2.jpg",
+    alt: "Técnico en sitio revisando instalaciones",
   },
   vacuum: {
-    src: "/images/product-vacuum.jpg",
-    alt: "Camión industrial para operaciones de campo",
+    src: "/images/product-vacuum-v2.jpg",
+    alt: "Camión vacuum cisterna en campo",
   },
   gruas: {
-    src: "/images/product-gruas.jpg",
-    alt: "Grúa industrial en izaje de carga",
+    src: "/images/product-gruas-v2.jpg",
+    alt: "Grúa torre amarilla en obra",
   },
   soldadura: {
-    src: "/images/product-soldadura.jpg",
-    alt: "Trabajo de soldadura industrial",
+    src: "/images/product-soldadura-v2.jpg",
+    alt: "Equipo de soldadura industrial en uso",
   },
   transporte: {
-    src: "/images/product-transporte.jpg",
-    alt: "Transporte y logística de campo",
+    src: "/images/product-transporte-v2.jpg",
+    alt: "Transporte de contenedores e importación",
   },
   calzado: {
-    src: "/images/product-calzado.jpg",
-    alt: "Calzado y protección industrial",
+    src: "/images/product-calzado-v2.jpg",
+    alt: "Botas de seguridad industrial",
   },
   gases: {
-    src: "/images/product-gases.jpg",
-    alt: "Equipos de detección y seguridad industrial",
+    src: "/images/product-gases-v2.jpg",
+    alt: "Detector de gases y válvulas industriales",
   },
 } as const;
 

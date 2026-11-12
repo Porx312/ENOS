@@ -53,16 +53,30 @@ async function hubFetch(path: string, init?: RequestInit) {
   return { ok: response.ok, status: response.status, data, skipped: false as const };
 }
 
-async function findContactIdByEmail(email: string) {
-  const result = await hubFetch("/crm/v3/objects/contacts/search", {
+function hubErrorMessage(label: string, status: number, data: Record<string, unknown> | null) {
+  const detail =
+    data && typeof data.message === "string"
+      ? data.message
+      : data
+        ? JSON.stringify(data).slice(0, 300)
+        : "";
+  return detail ? `${label} (${status}): ${detail}` : `${label} (${status}).`;
+}
+
+async function searchObjectId(
+  objectType: "contacts" | "companies",
+  propertyName: string,
+  value: string,
+) {
+  const result = await hubFetch(`/crm/v3/objects/${objectType}/search`, {
     method: "POST",
     body: JSON.stringify({
       filterGroups: [
         {
-          filters: [{ propertyName: "email", operator: "EQ", value: email }],
+          filters: [{ propertyName, operator: "EQ", value }],
         },
       ],
-      properties: ["email"],
+      properties: [propertyName],
       limit: 1,
     }),
   });
@@ -74,25 +88,68 @@ async function findContactIdByEmail(email: string) {
   return first.id ?? null;
 }
 
+async function associate(
+  fromType: string,
+  fromId: string,
+  toType: string,
+  toId: string,
+  associationTypeId: number,
+) {
+  return hubFetch(`/crm/v4/objects/${fromType}/${fromId}/associations/${toType}/${toId}`, {
+    method: "PUT",
+    body: JSON.stringify([
+      {
+        associationCategory: "HUBSPOT_DEFINED",
+        associationTypeId,
+      },
+    ]),
+  });
+}
+
+/** Crea o reutiliza la Company y la asocia como Primary al contacto (y al deal si hay). */
+async function upsertCompany(name: string) {
+  const trimmed = name.trim().slice(0, 100);
+  if (!trimmed) return null;
+
+  const existingId = await searchObjectId("companies", "name", trimmed);
+  if (existingId) return existingId;
+
+  const created = await hubFetch("/crm/v3/objects/companies", {
+    method: "POST",
+    body: JSON.stringify({ properties: { name: trimmed } }),
+  });
+  if (!created.ok || !created.data?.id) {
+    console.error(
+      "HubSpot: no se pudo crear la company",
+      created.status,
+      created.data,
+      "(¿falta scope crm.objects.companies.write?)",
+    );
+    return null;
+  }
+  return String(created.data.id);
+}
+
 async function upsertContact(lead: HubSpotLead) {
   const { firstname, lastname } = splitName(lead.nombre);
   const properties: Record<string, string> = {
     email: lead.correo,
     firstname,
     phone: lead.telefono,
+    // Texto "Company Name" en el contacto (aparte de la Company asociada).
     company: lead.empresa,
     lifecyclestage: "lead",
   };
   if (lastname) properties.lastname = lastname;
 
-  const existingId = await findContactIdByEmail(lead.correo);
+  const existingId = await searchObjectId("contacts", "email", lead.correo);
   if (existingId) {
     const updated = await hubFetch(`/crm/v3/objects/contacts/${existingId}`, {
       method: "PATCH",
       body: JSON.stringify({ properties }),
     });
     if (!updated.ok) {
-      throw new Error(`No se pudo actualizar el contacto en HubSpot (${updated.status}).`);
+      throw new Error(hubErrorMessage("No se pudo actualizar el contacto en HubSpot", updated.status, updated.data));
     }
     return existingId;
   }
@@ -102,7 +159,7 @@ async function upsertContact(lead: HubSpotLead) {
     body: JSON.stringify({ properties }),
   });
   if (!created.ok || !created.data?.id) {
-    throw new Error(`No se pudo crear el contacto en HubSpot (${created.status}).`);
+    throw new Error(hubErrorMessage("No se pudo crear el contacto en HubSpot", created.status, created.data));
   }
   return String(created.data.id);
 }
@@ -121,7 +178,7 @@ function dealDescription(lead: HubSpotLead) {
   return lines.join("\n").slice(0, 65000);
 }
 
-async function createDeal(lead: HubSpotLead, contactId: string) {
+async function createDeal(lead: HubSpotLead, contactId: string, companyId: string | null) {
   const dealname = `Cotización · ${lead.line} · ${lead.empresa}`.slice(0, 100);
   const created = await hubFetch("/crm/v3/objects/deals", {
     method: "POST",
@@ -136,25 +193,30 @@ async function createDeal(lead: HubSpotLead, contactId: string) {
   });
 
   if (!created.ok || !created.data?.id) {
-    throw new Error(`No se pudo crear el deal en HubSpot (${created.status}).`);
+    throw new Error(hubErrorMessage("No se pudo crear el deal en HubSpot", created.status, created.data));
   }
 
   const dealId = String(created.data.id);
-  const associated = await hubFetch(
-    `/crm/v4/objects/deals/${dealId}/associations/contacts/${contactId}`,
-    {
-      method: "PUT",
-      body: JSON.stringify([
-        {
-          associationCategory: "HUBSPOT_DEFINED",
-          associationTypeId: 3,
-        },
-      ]),
-    },
-  );
+  // 3 = deal → contact (primary)
+  const associatedContact = await associate("deals", dealId, "contacts", contactId, 3);
+  if (!associatedContact.ok) {
+    console.error(
+      "HubSpot: deal creado pero no asociado al contacto",
+      associatedContact.status,
+      associatedContact.data,
+    );
+  }
 
-  if (!associated.ok) {
-    console.error("HubSpot: deal creado pero no asociado al contacto", associated.status, associated.data);
+  if (companyId) {
+    // 5 = deal → company (primary)
+    const associatedCompany = await associate("deals", dealId, "companies", companyId, 5);
+    if (!associatedCompany.ok) {
+      console.error(
+        "HubSpot: deal creado pero no asociado a la company",
+        associatedCompany.status,
+        associatedCompany.data,
+      );
+    }
   }
 
   return dealId;
@@ -201,7 +263,19 @@ export async function upsertHubSpotLead(lead: HubSpotLead): Promise<HubSpotResul
 
   try {
     const contactId = await upsertContact(lead);
-    const dealId = await createDeal(lead, contactId);
+    const companyId = await upsertCompany(lead.empresa);
+    if (companyId) {
+      // 1 = contact → company (Primary) — es lo que muestra la UI de HubSpot como "Company"
+      const linked = await associate("contacts", contactId, "companies", companyId, 1);
+      if (!linked.ok) {
+        console.error(
+          "HubSpot: contacto sin company asociada",
+          linked.status,
+          linked.data,
+        );
+      }
+    }
+    const dealId = await createDeal(lead, contactId, companyId);
     await createNote(lead, contactId, dealId);
     return { ok: true, contactId, dealId };
   } catch (error) {

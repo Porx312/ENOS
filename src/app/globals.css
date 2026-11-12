@@ -1,18 +1,19 @@
 @import "tailwindcss/index.css";
 
 @theme inline {
-  --color-petroleum: #102b3f;
-  --color-petroleum-hover: #0c2232;
-  --color-orange: #ffc400;
-  --color-orange-hover: #e6b000;
-  --color-mist: #f3f5f6;
+  /* Carbón (antes petroleum azul) — se mantiene el nombre de token para no romper clases */
+  --color-petroleum: #141414;
+  --color-petroleum-hover: #0a0a0a;
+  --color-orange: #f9c513;
+  --color-orange-hover: #e0b010;
+  --color-mist: #faf6ee;
   --color-paper: #ffffff;
-  --color-ink: #263746;
-  --color-muted: #5a6b78;
-  --color-line: rgb(16 43 63 / 0.12);
+  --color-ink: #1a1a1a;
+  --color-muted: #6b6560;
+  --color-line: rgb(20 20 20 / 0.1);
   --color-whatsapp: #25d366;
   --color-whatsapp-hover: #1da851;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -22,17 +23,143 @@ html {
 
 body {
   background: #ffffff;
-  color: #263746;
+  color: #1a1a1a;
 }
 
 ::selection {
-  background: #ffc400;
-  color: #102b3f;
+  background: #f9c513;
+  color: #141414;
 }
 
 :focus-visible {
-  outline: 2px solid #ffc400;
+  outline: 2px solid #f9c513;
   outline-offset: 3px;
+}
+
+/* Botones compartidos */
+.btn-primary {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.125rem;
+  background: #f9c513;
+  padding-inline: 1.25rem;
+  font-weight: 700;
+  color: #141414;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: #e0b010;
+}
+
+.btn-dark {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.125rem;
+  background: #141414;
+  padding-inline: 1.25rem;
+  font-weight: 700;
+  color: #fffdf8;
+  transition: background-color 0.2s ease;
+}
+
+.btn-dark:hover {
+  background: #0a0a0a;
+}
+
+.btn-ghost {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.125rem;
+  border: 1px solid rgb(20 20 20 / 0.2);
+  padding-inline: 1.25rem;
+  font-weight: 700;
+  color: #141414;
+  transition: background-color 0.2s ease;
+}
+
+.btn-ghost:hover {
+  background: rgb(20 20 20 / 0.04);
+}
+
+.btn-ghost-on-dark {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.125rem;
+  border: 1px solid rgb(20 20 20 / 0.25);
+  padding-inline: 1.25rem;
+  font-weight: 700;
+  color: #141414;
+  background: #fff;
+  transition: background-color 0.2s ease;
+}
+
+.btn-ghost-on-dark:hover {
+  background: rgb(255 255 255 / 0.85);
+}
+
+.btn-outline {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.125rem;
+  border: 1px solid rgb(20 20 20 / 0.18);
+  padding-inline: 1.25rem;
+  font-weight: 700;
+  color: #141414;
+  transition: background-color 0.2s ease;
+}
+
+.btn-outline:hover {
+  background: rgb(20 20 20 / 0.04);
+}
+
+/* Trama geométrica sutil (estilo industrial) */
+.surface-grid {
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(rgb(20 20 20 / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(20 20 20 / 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.band-yellow {
+  background: #f9c513;
+  color: #141414;
+}
+
+.accent-slash {
+  position: relative;
+}
+
+.accent-slash::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 4.5rem;
+  height: 4.5rem;
+  background: linear-gradient(135deg, transparent 50%, #f9c513 50%);
+  pointer-events: none;
+}
+
+.hero-media {
+  transition: transform 8s ease-out;
+}
+
+.group\/hero:hover .hero-media {
+  transform: scale(1.04);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -44,6 +171,13 @@ body {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
+  }
+
+  .btn-primary,
+  .hero-media,
+  .group\/hero:hover .hero-media {
+    transition: none !important;
+    transform: none !important;
   }
 }
 

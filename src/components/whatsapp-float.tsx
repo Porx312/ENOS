@@ -14,7 +14,7 @@ export function WhatsAppFloat() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Escribir por WhatsApp"
-      className="fixed right-4 bottom-4 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-whatsapp text-white shadow-lg transition hover:bg-whatsapp-hover"
+      className="fixed right-4 bottom-20 z-50 inline-flex h-14 w-14 items-center justify-center rounded-sm bg-whatsapp text-white shadow-lg ring-2 ring-orange/80 transition hover:bg-whatsapp-hover lg:bottom-4"
       onClick={(event) => {
         const next = whatsappHref(withCampaign("Hola, quiero cotizar con Energía Nuevo Oriente."));
         if (!next) {

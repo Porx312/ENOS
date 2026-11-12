@@ -7,11 +7,11 @@ import { CheckCircle2, Package, X } from "lucide-react";
 import { LEAD_PENDING_KEY, QUOTE_MESSAGE_KEY, readUtm, track } from "@/lib/campaign";
 import type { ExtraField } from "@/lib/landings";
 import { getRequestType, requestTypes, type RequestTypeId } from "@/lib/requests";
-import { whatsappHref } from "@/lib/site";
+import { commercialSla, whatsappHref } from "@/lib/site";
 import { WhatsAppLink } from "@/components/whatsapp-link";
 
 const inputClass =
-  "mt-1 w-full rounded-md border border-line bg-paper px-3 py-3 text-base text-ink outline-none focus:border-petroleum";
+  "mt-1 w-full rounded-none border border-line bg-mist/50 px-3 py-3 text-base text-ink outline-none transition focus:border-orange focus:bg-paper";
 const errorClass = "border-orange";
 
 const coverageField: ExtraField = {
@@ -216,18 +216,18 @@ export function LeadForm({
 
   if (done) {
     return (
-      <div id={id} className="rounded-lg border border-line bg-paper p-6 text-ink shadow-sm">
+      <div id={id} className="border border-line border-t-4 border-t-orange bg-paper p-6 text-ink">
         <div className="flex items-start gap-3">
           <CheckCircle2 className="mt-1 h-6 w-6 text-orange" />
           <div>
-            <h2 className="font-display text-3xl font-semibold tracking-tight text-petroleum">
+            <h2 className="font-display text-3xl font-extrabold tracking-tight text-petroleum uppercase">
               Solicitud recibida
             </h2>
             <p className="mt-3 text-sm leading-6 text-muted">{mailNote}</p>
             <WhatsAppLink
               message={message}
               line={lineLabel}
-              className="mt-5 inline-flex min-h-12 items-center justify-center rounded-md bg-whatsapp px-5 font-semibold text-petroleum transition hover:bg-whatsapp-hover"
+              className="mt-5 inline-flex min-h-12 items-center justify-center bg-whatsapp px-5 font-bold text-white transition hover:bg-whatsapp-hover"
             >
               Abrir WhatsApp
             </WhatsAppLink>
@@ -242,12 +242,13 @@ export function LeadForm({
       id={id}
       onSubmit={onSubmit}
       onBlur={onBlur}
-      className="relative rounded-lg border border-line bg-paper p-5 text-ink shadow-sm sm:p-6"
+      className="relative border border-line border-t-4 border-t-orange bg-paper p-5 text-ink sm:p-6"
       noValidate
     >
-      <h2 className="font-display text-3xl font-semibold tracking-tight text-petroleum">{title}</h2>
+      <h2 className="font-display text-3xl font-extrabold tracking-tight text-petroleum uppercase">{title}</h2>
       <p className="mt-2 text-sm leading-6 text-muted">
-        Complete los datos. La solicitud se envía al departamento correspondiente y se abre WhatsApp con el resumen.
+        Complete los datos. La solicitud se envía al departamento correspondiente y se abre WhatsApp con el resumen.{" "}
+        {commercialSla}
       </p>
       {errors.form ? (
         <p className="mt-4 rounded-md bg-mist px-3 py-2 text-sm text-ink" role="alert">
@@ -256,8 +257,8 @@ export function LeadForm({
       ) : null}
 
       {producto || fixedType ? (
-        <div className="mt-5 rounded-md border border-line bg-mist px-4 py-3">
-          <p className="text-xs font-semibold tracking-wide text-muted uppercase">Consulta seleccionada</p>
+        <div className="mt-5 border border-line bg-mist px-4 py-3">
+          <p className="text-xs font-bold tracking-[0.14em] text-muted uppercase">Consulta seleccionada</p>
           <div className="mt-2 flex items-start gap-3">
             <Package className="mt-0.5 h-5 w-5 shrink-0 text-orange" strokeWidth={1.75} />
             <div className="min-w-0 flex-1">
@@ -376,11 +377,7 @@ export function LeadForm({
         </label>
       </div>
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-md bg-orange px-5 font-semibold text-petroleum transition hover:bg-orange-hover disabled:opacity-60"
-      >
+      <button type="submit" disabled={pending} className="btn-primary mt-5 w-full disabled:opacity-60">
         {pending ? "Enviando…" : "Enviar solicitud"}
       </button>
       <p className="mt-3 text-xs leading-5 text-muted">

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${company.name} · Soluciones para la operación`,
     description: company.description,
-    images: [{ url: "/images/hero.jpg" }],
+    images: [{ url: "/images/hero.png" }],
   },
 };
 

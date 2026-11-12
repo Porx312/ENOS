@@ -16,9 +16,11 @@ type Props = {
 export function MetaPixel({ pixelId, testEventCode = "" }: Props) {
   if (!/^\d{5,20}$/.test(pixelId)) return null;
 
-  const testLine = testEventCode
-    ? `fbq('set', 'test_event_code', '${testEventCode.replace(/'/g, "")}');`
-    : "";
+  const safeTest = testEventCode.replace(/'/g, "");
+  const testLine = safeTest
+    ? `fbq('init', '${pixelId}');
+fbq('set', 'test_event_code', '${safeTest}');`
+    : `fbq('init', '${pixelId}');`;
 
   return (
     <>
@@ -32,7 +34,6 @@ n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '${pixelId}');
 ${testLine}
 fbq('track', 'PageView');
         `}

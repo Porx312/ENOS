@@ -32,7 +32,7 @@ export const homeServices = [
   },
   {
     title: "Importación por encargo",
-    text: "Maquinaria importada desde China según su especificación, sin catálogo fijo.",
+    text: "Maquinaria desde China según especificación, sin catálogo fijo.",
     href: "/importacion",
     tipo: "importacion" as RequestTypeId,
     image: images.transporte,
@@ -49,7 +49,7 @@ export const homeServices = [
 export const differentiators = [
   {
     title: "Atención comercial personalizada",
-    text: "Cada solicitud se revisa con el contexto de la operación y la urgencia del sitio.",
+    text: "Cada solicitud se revisa con el contexto de la operación y la urgencia del sitio en el oriente.",
   },
   {
     title: "Soluciones integrales",
@@ -57,7 +57,7 @@ export const differentiators = [
   },
   {
     title: "Suministros industriales",
-    text: "Repuestos, consumibles y materiales, con procura internacional cuando hace falta.",
+    text: "Repuestos, consumibles y materiales; originales cuando la especificación lo exige.",
   },
   {
     title: "Soporte orientado a operaciones",

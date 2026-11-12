@@ -35,26 +35,34 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-colors ${
-        scrolled || open ? "border-b border-white/10 bg-petroleum text-white shadow-sm" : "bg-petroleum text-white"
+      className={`sticky top-0 z-50 text-ink transition-[background-color,backdrop-filter,border-color] ${
+        open
+          ? "border-b border-white/40 bg-white/75 backdrop-blur-xl backdrop-saturate-150"
+          : scrolled
+            ? "border-b border-white/30 bg-white/55 backdrop-blur-xl backdrop-saturate-150"
+            : "border-b border-transparent bg-white/40 backdrop-blur-lg backdrop-saturate-150"
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
         <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-sm bg-orange font-display text-sm font-bold text-petroleum">
+          <span className="grid h-10 w-10 shrink-0 place-items-center bg-orange font-display text-sm font-extrabold tracking-tight text-petroleum">
             EN
           </span>
           <span className="min-w-0">
-            <span className="block truncate font-display text-base font-semibold leading-none tracking-tight sm:text-lg">
+            <span className="block truncate font-display text-base font-extrabold leading-none tracking-tight uppercase sm:text-lg">
               {company.name}
             </span>
-            <span className="mt-1 block text-[11px] text-white/70">{company.region}</span>
+            <span className="mt-1 block text-[11px] tracking-wide text-muted uppercase">{company.region}</span>
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-6 lg:flex" aria-label="Principal">
+        <nav className="hidden items-center gap-7 lg:flex" aria-label="Principal">
           {navLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="text-sm font-medium text-white/85 hover:text-white">
+            <Link
+              key={link.href}
+              href={link.href}
+              className="text-sm font-semibold tracking-wide text-ink/80 uppercase hover:text-petroleum"
+            >
               {link.label}
             </Link>
           ))}
@@ -65,7 +73,7 @@ export function SiteHeader() {
           >
             <button
               type="button"
-              className="inline-flex items-center gap-1 text-sm font-medium text-white/85 hover:text-white"
+              className="inline-flex items-center gap-1 text-sm font-semibold tracking-wide text-ink/80 uppercase hover:text-petroleum"
               aria-expanded={solutionsOpen}
               onClick={() => setSolutionsOpen((value) => !value)}
             >
@@ -74,28 +82,26 @@ export function SiteHeader() {
             </button>
             {solutionsOpen ? (
               <div className="absolute top-full left-0 z-50 w-72 pt-2">
-                <div className="rounded-md border border-white/10 bg-petroleum p-3 shadow-lg">
+                <div className="border border-line bg-white p-3 shadow-lg">
                   <ul className="space-y-1">
                     {serviceLinks.map((link) => (
                       <li key={link.href}>
                         <Link
                           href={link.href}
-                          className="block rounded-md px-3 py-2 text-sm font-medium text-white/90 hover:bg-white/5"
+                          className="block px-3 py-2 text-sm font-medium text-ink hover:bg-mist hover:text-petroleum"
                         >
                           {link.label}
                         </Link>
                       </li>
                     ))}
                   </ul>
-                  <p className="mt-3 px-3 text-[11px] font-semibold tracking-wide text-orange uppercase">
-                    Alquiler
-                  </p>
+                  <p className="mt-3 px-3 text-[11px] font-bold tracking-[0.16em] text-orange uppercase">Alquiler</p>
                   <ul className="mt-1 space-y-1">
                     {alquilerSubLinks.map((link) => (
                       <li key={link.href}>
                         <Link
                           href={link.href}
-                          className="block rounded-md px-3 py-2 text-sm text-white/75 hover:bg-white/5 hover:text-white"
+                          className="block px-3 py-2 text-sm text-muted hover:bg-mist hover:text-petroleum"
                         >
                           {link.label}
                         </Link>
@@ -106,17 +112,14 @@ export function SiteHeader() {
               </div>
             ) : null}
           </div>
-          <Link
-            href="/contacto"
-            className="inline-flex min-h-11 items-center rounded-md bg-orange px-4 text-sm font-semibold text-petroleum transition hover:bg-orange-hover"
-          >
+          <Link href="/contacto" className="btn-primary min-h-11 px-4 text-sm">
             Pedir cotización
           </Link>
         </nav>
 
         <button
           type="button"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-md border border-white/20 lg:hidden"
+          className="inline-flex h-11 w-11 items-center justify-center border border-line bg-paper/80 text-ink lg:hidden"
           aria-expanded={open}
           aria-controls={panelId}
           aria-label={open ? "Cerrar menú" : "Abrir menú"}
@@ -127,24 +130,24 @@ export function SiteHeader() {
       </div>
 
       {open ? (
-        <div id={panelId} className="border-t border-white/10 bg-petroleum lg:hidden">
+        <div id={panelId} className="border-t border-white/40 bg-white/80 backdrop-blur-xl backdrop-saturate-150 lg:hidden">
           <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-5 py-4" aria-label="Móvil">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded-md px-3 py-3 text-base font-medium text-white/90 hover:bg-white/5"
+                className="px-3 py-3 text-base font-semibold tracking-wide text-ink uppercase hover:bg-mist"
                 onClick={() => setOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
-            <p className="mt-2 px-3 text-xs font-semibold tracking-wide text-orange uppercase">Soluciones</p>
+            <p className="mt-2 px-3 text-xs font-bold tracking-[0.16em] text-orange uppercase">Soluciones</p>
             {serviceLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded-md px-3 py-3 text-base font-medium text-white/90 hover:bg-white/5"
+                className="px-3 py-3 text-base font-medium text-ink hover:bg-mist"
                 onClick={() => setOpen(false)}
               >
                 {link.label}
@@ -154,17 +157,13 @@ export function SiteHeader() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="rounded-md px-3 py-2 pl-5 text-sm text-white/75 hover:bg-white/5"
+                className="px-3 py-2 pl-5 text-sm text-muted hover:bg-mist"
                 onClick={() => setOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/contacto"
-              className="mt-2 inline-flex min-h-12 items-center justify-center rounded-md bg-orange px-4 font-semibold text-petroleum"
-              onClick={() => setOpen(false)}
-            >
+            <Link href="/contacto" className="btn-primary mt-2" onClick={() => setOpen(false)}>
               Pedir cotización
             </Link>
             <button ref={closeRef} type="button" className="sr-only" onClick={() => setOpen(false)}>

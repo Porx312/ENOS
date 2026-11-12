@@ -63,8 +63,10 @@ export function track(
   line: string,
 ) {
   if (typeof window === "undefined") return;
+  // GA4 / Meta solo existen tras consentimiento (ver Analytics + CookieBanner).
   window.gtag?.("event", event, { line });
   if (event === "generate_lead") {
+    // Marcar generate_lead como conversión en GA4; en Meta Ads optimizar a Lead.
     window.fbq?.("track", "Lead", { content_name: line });
   } else if (event === "whatsapp_click") {
     window.fbq?.("trackCustom", "WhatsAppClick", { content_name: line });
