@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { UTM_KEYS } from "@/lib/campaign";
+import { upsertHubSpotLead } from "@/lib/hubspot";
 import { getLanding } from "@/lib/landings";
 import { departmentEmail, getRequestType, requestTypes } from "@/lib/requests";
 
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
 
   const data = body as Record<string, unknown>;
   if (text(data.company_website, SHORT)) {
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, delivered: false, crm: false });
   }
 
   const tipo = text(data.tipo, 40);
@@ -80,9 +81,14 @@ export async function POST(request: Request) {
       if (value) extras.push([field.label, value]);
     }
   } else {
+    const labelByKey: Record<string, string> = {
+      cobertura: "Ubicación / zona de la operación",
+      sitio_operacion: "Ubicación del sitio",
+      entrega: "Lugar de entrega",
+    };
     for (const [key, value] of Object.entries(rawExtras)) {
       const textValue = text(value, LONG);
-      if (textValue) extras.push([key, textValue]);
+      if (textValue) extras.push([labelByKey[key] ?? key, textValue]);
     }
   }
 
@@ -109,37 +115,50 @@ export async function POST(request: Request) {
     .filter(Boolean)
     .join("\n");
 
+  const crmResult = await upsertHubSpotLead({
+    nombre,
+    empresa,
+    correo,
+    telefono,
+    line,
+    tipoLabel: requestType.label,
+    department,
+    path,
+    producto,
+    descripcion,
+    extras,
+    utm,
+    message,
+  });
+
+  let delivered = false;
   const apiKey = process.env.RESEND_API_KEY;
   const to = departmentEmail(tipo);
   const from = process.env.RESEND_FROM;
 
-  if (!apiKey || !to || !from) {
-    if (process.env.NODE_ENV !== "production") {
-      console.info(`Lead recibido sin correo configurado:\n${message}`);
-      return NextResponse.json({ ok: true, delivered: false });
+  if (apiKey && to && from) {
+    const resend = new Resend(apiKey);
+    const { error } = await resend.emails.send({
+      from,
+      to,
+      replyTo: correo,
+      subject: `Cotización · ${department} · ${empresa}`,
+      text: message,
+    });
+    if (error) {
+      console.error(error);
+    } else {
+      delivered = true;
     }
-    return NextResponse.json(
-      { error: "El correo comercial no está configurado. Escríbanos por WhatsApp." },
-      { status: 503 },
-    );
+  } else if (process.env.NODE_ENV !== "production") {
+    console.info(`Lead recibido sin correo configurado:\n${message}`);
   }
 
-  const resend = new Resend(apiKey);
-  const { error } = await resend.emails.send({
-    from,
-    to,
-    replyTo: correo,
-    subject: `Cotización · ${department} · ${empresa}`,
-    text: message,
+  // WhatsApp is the primary channel: never block the client for missing CRM/email.
+  return NextResponse.json({
+    ok: true,
+    delivered,
+    crm: crmResult.ok,
+    ...(crmResult.ok ? {} : crmResult.error ? { crmError: crmResult.error } : {}),
   });
-
-  if (error) {
-    console.error(error);
-    return NextResponse.json(
-      { error: "No pudimos enviar la solicitud. Escríbanos por WhatsApp." },
-      { status: 502 },
-    );
-  }
-
-  return NextResponse.json({ ok: true, delivered: true });
 }

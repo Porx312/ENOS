@@ -193,22 +193,18 @@ export function LeadForm({
         }),
       });
       const payload = (await response.json().catch(() => null)) as
-        | { ok?: boolean; delivered?: boolean; error?: string }
+        | { ok?: boolean; delivered?: boolean; crm?: boolean; error?: string }
         | null;
       if (!response.ok) {
         note =
-          payload?.error ||
-          "No pudimos registrar el correo interno. Complete el envío por WhatsApp para que el equipo reciba la solicitud.";
-      } else if (payload?.delivered === false) {
-        note =
-          "WhatsApp queda listo con su resumen. El correo interno no está configurado todavía; el canal principal es WhatsApp.";
+          "Su solicitud está lista. Si WhatsApp no se abrió, use el botón siguiente para enviarla al equipo comercial.";
       } else {
         note =
-          `El departamento de ${selected.department} recibirá los datos. Si WhatsApp no se abrió, use el botón siguiente.`;
+          "Su solicitud llegó correctamente. Si WhatsApp no se abrió, use el botón siguiente para completar el envío.";
       }
     } catch {
       note =
-        "No pudimos confirmar el registro interno. Envíe el mensaje por WhatsApp para que el equipo comercial lo reciba.";
+        "Su solicitud está lista. Si WhatsApp no se abrió, use el botón siguiente para enviarla al equipo comercial.";
     }
 
     setMailNote(note);
@@ -225,7 +221,7 @@ export function LeadForm({
           <CheckCircle2 className="mt-1 h-6 w-6 text-orange" />
           <div>
             <h2 className="font-display text-3xl font-semibold tracking-tight text-petroleum">
-              Solicitud lista para enviar
+              Solicitud recibida
             </h2>
             <p className="mt-3 text-sm leading-6 text-muted">{mailNote}</p>
             <WhatsAppLink

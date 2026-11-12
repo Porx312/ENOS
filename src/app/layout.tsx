@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Montserrat } from "next/font/google";
 import Script from "next/script";
+import { MetaPixel } from "@/components/meta-pixel";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { UtmCapture } from "@/components/utm-capture";
@@ -20,6 +21,7 @@ const montserrat = Montserrat({
 });
 
 const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim() ?? "";
+const pixelTestCode = process.env.NEXT_PUBLIC_META_TEST_EVENT_CODE?.trim() ?? "";
 const gaId = process.env.NEXT_PUBLIC_GA_ID?.trim() ?? "";
 const pixelOk = /^\d{5,20}$/.test(pixelId);
 const gaOk = /^G-[A-Z0-9]+$/.test(gaId);
@@ -95,11 +97,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </Script>
           </>
         ) : null}
-        {pixelOk ? (
-          <Script id="meta-pixel" strategy="afterInteractive">
-            {`!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${pixelId}');fbq('track','PageView');`}
-          </Script>
-        ) : null}
+        {pixelOk ? <MetaPixel pixelId={pixelId} testEventCode={pixelTestCode} /> : null}
       </body>
     </html>
   );
