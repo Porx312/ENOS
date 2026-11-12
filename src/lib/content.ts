@@ -31,6 +31,13 @@ export const homeServices = [
     image: images.alquiler,
   },
   {
+    title: "Importación por encargo",
+    text: "Maquinaria importada desde China según su especificación, sin catálogo fijo.",
+    href: "/importacion",
+    tipo: "importacion" as RequestTypeId,
+    image: images.transporte,
+  },
+  {
     title: "Servicios en sitio",
     text: "Asistencia técnica y soporte especializado directamente en las instalaciones del cliente.",
     href: "/servicios",

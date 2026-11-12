@@ -803,9 +803,127 @@ export const landings: Landing[] = [
       },
     ],
     related: [
+      { href: "/importacion", label: "Importar maquinaria desde China" },
       { href: "/alquiler", label: "Alquilar en lugar de comprar" },
       { href: "/suministros", label: "Comprar repuestos" },
-      { href: "/servicios", label: "Solicitar un servicio" },
+    ],
+  },
+  {
+    path: "importacion",
+    line: "Importación por encargo",
+    metaTitle: "Importación de maquinaria desde China",
+    metaDescription:
+      "Cotice importación por encargo de maquinaria desde China: procura según especificación, sin catálogo fijo.",
+    eyebrow: "Importación · China",
+    title: "Maquinaria desde China, por encargo",
+    subtitle:
+      "Si el equipo no está en plaza, lo cotizamos por encargo desde China según su especificación. Hoy el origen de procura es China.",
+    whatsappMessage: "Hola, quiero cotizar importación por encargo de maquinaria desde China.",
+    requestType: "importacion",
+    imageKey: "transporte",
+    trust: ["Por encargo", "Origen China", "Según especificación", "Sin catálogo fijo"],
+    audience,
+    offers: [
+      {
+        title: "Maquinaria industrial",
+        text: "Equipos de producción, mantenimiento o apoyo a planta que deba traerse bajo pedido.",
+      },
+      {
+        title: "Según su ficha técnica",
+        text: "La cotización sale de la especificación, capacidad y condición que usted indique.",
+      },
+      {
+        title: "Procura en China",
+        text: "Por ahora la importación por encargo se gestiona desde proveedores en China.",
+      },
+    ],
+    steps: [
+      {
+        title: "Describa el equipo",
+        text: "Tipo de máquina, capacidad, norma si aplica y para cuándo lo necesita.",
+      },
+      {
+        title: "Reciba la cotización",
+        text: "El equipo comercial responde con alcance, condiciones y plazo estimado de importación.",
+      },
+      {
+        title: "Encargo e importación",
+        text: "Si acepta, se gestiona la compra en China y el proceso de llegada a su zona.",
+      },
+    ],
+    reasons: [
+      {
+        title: "Por encargo, no de showroom",
+        text: "No publicamos stock ni precios fijos. Cada pedido se arma a medida.",
+      },
+      {
+        title: "China como origen actual",
+        text: "La línea está enfocada en procura desde China. Si necesita otro origen, indíquelo y lo evaluamos.",
+      },
+      {
+        title: "Especificación primero",
+        text: "Sin dato técnico mínimo no hay cotización seria de importación.",
+      },
+      {
+        title: "Zona de entrega",
+        text: "Confirmamos si podemos atender la ubicación donde necesita el equipo.",
+      },
+    ],
+    faqs: [
+      plazo,
+      cobertura,
+      {
+        question: "¿Importan desde otros países además de China?",
+        answer:
+          "Por ahora esta línea está enfocada en China. Si requiere otro origen, indíquelo en la solicitud y confirmamos si podemos gestionarlo.",
+      },
+      {
+        question: "¿Tienen catálogo o precios publicados?",
+        answer:
+          "No. La importación es por encargo: se cotiza según el equipo, la especificación y el plazo que usted indique.",
+      },
+    ],
+    fields: [
+      {
+        name: "tipo_maquina",
+        label: "Tipo de máquina",
+        type: "text",
+        required: true,
+        placeholder: "Ej. compresor, torneado, equipo de producción",
+      },
+      {
+        name: "capacidad",
+        label: "Capacidad o especificación",
+        type: "textarea",
+        required: true,
+        placeholder: "Capacidad, modelo de referencia, norma o ficha que ya tenga",
+      },
+      {
+        name: "condicion",
+        label: "Condición buscada",
+        type: "select",
+        required: false,
+        options: ["Nueva", "Usada", "La que tengan disponible"],
+      },
+      {
+        name: "plazo",
+        label: "Plazo deseado",
+        type: "text",
+        required: false,
+        placeholder: "Opcional · Ej. en 90 días",
+      },
+      {
+        name: "cobertura",
+        label: "Ubicación / zona de entrega",
+        type: "textarea",
+        required: true,
+        placeholder: "Estado, municipio, planta o puerto de referencia. Confirmamos si podemos atender esa zona.",
+      },
+    ],
+    related: [
+      { href: "/maquinaria", label: "Comprar maquinaria en plaza" },
+      { href: "/suministros", label: "Comprar suministros" },
+      { href: "/alquiler", label: "Alquilar equipos" },
     ],
   },
   {
@@ -935,6 +1053,11 @@ export const landings: Landing[] = [
         title: "Comprar maquinaria",
         text: "Equipos de producción, mantenimiento y refinación.",
         href: "/maquinaria",
+      },
+      {
+        title: "Importación por encargo",
+        text: "Maquinaria desde China según especificación.",
+        href: "/importacion",
       },
       {
         title: "Pedir un servicio",

@@ -24,6 +24,12 @@ export const requestTypes = [
     emailEnv: "LEAD_EMAIL_EQUIPOS",
   },
   {
+    id: "importacion",
+    label: "Importación por encargo",
+    department: "Importación",
+    emailEnv: "LEAD_EMAIL_IMPORTACION",
+  },
+  {
     id: "servicios",
     label: "Servicios en sitio",
     department: "Servicios",

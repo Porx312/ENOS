@@ -77,6 +77,7 @@ export const serviceLinks = [
   { href: "/suministros", label: "Repuestos y suministros" },
   { href: "/epp", label: "Equipos de protección personal" },
   { href: "/maquinaria", label: "Venta de equipos" },
+  { href: "/importacion", label: "Importación por encargo" },
   { href: "/servicios", label: "Servicios en sitio" },
 ] as const;
 
