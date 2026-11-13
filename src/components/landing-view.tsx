@@ -74,7 +74,6 @@ export function LandingView({ landing }: { landing: Landing }) {
                 fill
                 className="object-contain object-bottom p-3 drop-shadow-lg sm:p-4"
                 sizes="100vw"
-                priority
               />
             </div>
           </div>

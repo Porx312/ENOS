@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandMark } from "@/components/brand-mark";
 import {
   company,
   companyRif,
@@ -25,9 +26,7 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 md:grid-cols-[1.3fr_1fr_1fr_1fr]">
         <div>
           <div className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center bg-orange font-display text-sm font-extrabold tracking-tight text-petroleum">
-              EN
-            </span>
+            <BrandMark className="h-10 w-10 shrink-0" />
             <p className="font-display text-lg font-extrabold tracking-tight uppercase">{company.legalName}</p>
           </div>
           <p className="mt-4 max-w-sm text-sm leading-6 text-muted">{company.description}</p>

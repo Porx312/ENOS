@@ -1,15 +1,19 @@
 export const images = {
   hero: {
-    src: "/images/hero.png",
+    src: "/images/hero.webp",
     alt: "Excavadora, bomba petrolera, pala cargadora y grúa móvil",
   },
   about: {
-    src: "/images/about-v2.jpg",
-    alt: "Planta energética e industrial al atardecer",
+    src: "/images/about-v2.webp",
+    alt: "Operario en sitio con maquinaria industrial",
   },
   alquiler: {
-    src: "/images/service-alquiler-v2.jpg",
+    src: "/images/service-alquiler-v2.webp",
     alt: "Excavadora amarilla en obra para alquiler",
+  },
+  venta: {
+    src: "/images/salles.webp",
+    alt: "Grúa, excavadora y camión para venta de equipos industriales",
   },
   suministros: {
     src: "/images/service-suministros-v2.jpg",

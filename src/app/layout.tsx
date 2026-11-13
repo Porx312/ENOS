@@ -46,13 +46,13 @@ export const metadata: Metadata = {
     siteName: company.name,
     type: "website",
     url: base,
-    images: [{ url: "/images/hero.png", width: 1600, height: 900, alt: company.name }],
+    images: [{ url: "/images/hero.webp", width: 1600, height: 900, alt: company.name }],
   },
   twitter: {
     card: "summary_large_image",
     title: company.name,
     description: company.description,
-    images: ["/images/hero.png"],
+    images: ["/images/hero.webp"],
   },
 };
 

@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { ChevronDown, Menu, X } from "lucide-react";
+import { BrandMark } from "@/components/brand-mark";
 import { alquilerSubLinks, company, navLinks, serviceLinks } from "@/lib/site";
 
 export function SiteHeader() {
@@ -45,9 +46,7 @@ export function SiteHeader() {
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
         <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
-          <span className="grid h-10 w-10 shrink-0 place-items-center bg-orange font-display text-sm font-extrabold tracking-tight text-petroleum">
-            EN
-          </span>
+          <BrandMark className="h-10 w-10 shrink-0" />
           <span className="min-w-0">
             <span className="block truncate font-display text-base font-extrabold leading-none tracking-tight uppercase sm:text-lg">
               {company.name}

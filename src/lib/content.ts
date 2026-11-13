@@ -28,7 +28,7 @@ export const homeServices = [
     text: "Maquinaria y equipos para producción, mantenimiento y refinación.",
     href: "/maquinaria",
     tipo: "equipos" as RequestTypeId,
-    image: images.alquiler,
+    image: images.venta,
   },
   {
     title: "Importación por encargo",
@@ -65,6 +65,7 @@ export const differentiators = [
   },
 ] as const;
 
+/** Catálogo completo (landings / referencia). */
 export const products = [
   {
     name: "Camiones vacuum y cisternas",
@@ -150,4 +151,14 @@ export const products = [
     href: "/epp",
     image: images.about,
   },
+] as const;
+
+/** Flagships en home (home más corta; el resto vive en landings). */
+export const homeFeaturedProducts = [
+  products[0],
+  products[1],
+  products[2],
+  products[5],
+  products[7],
+  products[10],
 ] as const;

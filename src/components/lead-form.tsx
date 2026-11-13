@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { CheckCircle2, Package, X } from "lucide-react";
+import { CheckCircle2, Loader2, MessageCircle, Package, X } from "lucide-react";
 import { LEAD_PENDING_KEY, QUOTE_MESSAGE_KEY, readUtm, track } from "@/lib/campaign";
 import type { ExtraField } from "@/lib/landings";
 import { getRequestType, requestTypes, type RequestTypeId } from "@/lib/requests";
@@ -13,6 +13,14 @@ import { WhatsAppLink } from "@/components/whatsapp-link";
 const inputClass =
   "mt-1 w-full rounded-none border border-line bg-mist/50 px-3 py-3 text-base text-ink outline-none transition focus:border-orange focus:bg-paper";
 const errorClass = "border-orange";
+
+const SUBMIT_MIN_MS = 1200;
+
+function delay(ms: number) {
+  return new Promise<void>((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
 const coverageField: ExtraField = {
   name: "cobertura",
@@ -58,7 +66,7 @@ export function LeadForm({
   const [message, setMessage] = useState("");
   const [mailNote, setMailNote] = useState("");
   const [errors, setErrors] = useState<Errors>({});
-  const [tipo, setTipo] = useState<RequestTypeId>(fixedType ?? "otra");
+  const [tipo, setTipo] = useState<RequestTypeId | "">(fixedType ?? "");
   const [producto, setProducto] = useState("");
 
   const fields = useMemo(
@@ -79,7 +87,7 @@ export function LeadForm({
     if (product) setProducto(product.slice(0, 160));
   }, [fixedType, searchParams]);
 
-  const request = useMemo(() => getRequestType(tipo), [tipo]);
+  const request = useMemo(() => getRequestType(tipo || "otra"), [tipo]);
 
   function validate(form: FormData): Errors {
     const next: Errors = {};
@@ -93,8 +101,11 @@ export function LeadForm({
     if (!empresa) next.empresa = "Indique la empresa.";
     if (!correo || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) next.correo = "Indique un correo válido.";
     if (digits(telefono).length < 9) next.telefono = "Indique un teléfono válido.";
-    if (!fixedType && !requestTypes.some((item) => item.id === String(form.get("tipo")))) {
-      next.tipo = "Seleccione el tipo de solicitud.";
+    if (!fixedType) {
+      const rawTipo = String(form.get("tipo") ?? "").trim();
+      if (!rawTipo || !requestTypes.some((item) => item.id === rawTipo)) {
+        next.tipo = "Seleccione el tipo de solicitud.";
+      }
     }
     if (descripcion.length < 20) next.descripcion = "Describa la necesidad con al menos 20 caracteres.";
 
@@ -172,29 +183,30 @@ export function LeadForm({
     let note =
       "Abriremos WhatsApp con el resumen. Si el mensaje no se envió, use el botón de abajo.";
     try {
-      const response = await fetch("/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        keepalive: true,
-        body: JSON.stringify({
-          line: lineLabel,
-          path: typeof window !== "undefined" ? window.location.pathname : "/",
-          tipo: selectedTipo,
-          department: selected.department,
-          nombre: data.get("nombre"),
-          empresa: data.get("empresa"),
-          correo: data.get("correo"),
-          telefono: data.get("telefono"),
-          producto,
-          descripcion: data.get("descripcion"),
-          extras,
-          utm: readUtm(),
-          company_website: data.get("company_website"),
+      const [response] = await Promise.all([
+        fetch("/api/leads", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          keepalive: true,
+          body: JSON.stringify({
+            line: lineLabel,
+            path: typeof window !== "undefined" ? window.location.pathname : "/",
+            tipo: selectedTipo,
+            department: selected.department,
+            nombre: data.get("nombre"),
+            empresa: data.get("empresa"),
+            correo: data.get("correo"),
+            telefono: data.get("telefono"),
+            producto,
+            descripcion: data.get("descripcion"),
+            extras,
+            utm: readUtm(),
+            company_website: data.get("company_website"),
+          }),
         }),
-      });
-      const payload = (await response.json().catch(() => null)) as
-        | { ok?: boolean; delivered?: boolean; crm?: boolean; error?: string }
-        | null;
+        delay(SUBMIT_MIN_MS),
+      ]);
+      await response.json().catch(() => null);
       if (!response.ok) {
         note =
           "Su solicitud está lista. Si WhatsApp no se abrió, use el botón siguiente para enviarla al equipo comercial.";
@@ -203,6 +215,7 @@ export function LeadForm({
           "Su solicitud llegó correctamente. Si WhatsApp no se abrió, use el botón siguiente para completar el envío.";
       }
     } catch {
+      await delay(SUBMIT_MIN_MS);
       note =
         "Su solicitud está lista. Si WhatsApp no se abrió, use el botón siguiente para enviarla al equipo comercial.";
     }
@@ -332,9 +345,12 @@ export function LeadForm({
               name="tipo"
               required
               value={tipo}
-              onChange={(event) => setTipo(event.target.value as RequestTypeId)}
+              onChange={(event) => setTipo(event.target.value as RequestTypeId | "")}
               aria-invalid={Boolean(errors.tipo)}
             >
+              <option value="" disabled>
+                Seleccione el tipo…
+              </option>
               {requestTypes.map((option) => (
                 <option key={option.id} value={option.id}>
                   {option.label}
@@ -377,8 +393,23 @@ export function LeadForm({
         </label>
       </div>
 
-      <button type="submit" disabled={pending} className="btn-primary mt-5 w-full disabled:opacity-60">
-        {pending ? "Enviando…" : "Enviar solicitud"}
+      <button
+        type="submit"
+        disabled={pending}
+        className="btn-primary mt-5 inline-flex w-full items-center justify-center gap-2 disabled:opacity-60"
+      >
+        {pending ? (
+          <>
+            <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
+            <MessageCircle className="h-5 w-5" aria-hidden="true" />
+            Enviando…
+          </>
+        ) : (
+          <>
+            <MessageCircle className="h-5 w-5" aria-hidden="true" />
+            Enviar solicitud
+          </>
+        )}
       </button>
       <p className="mt-3 text-xs leading-5 text-muted">
         Al enviar acepta el tratamiento de sus datos para cotizar esta solicitud, según el{" "}

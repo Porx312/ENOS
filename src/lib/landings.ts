@@ -727,7 +727,7 @@ export const landings: Landing[] = [
       "Venta y comercialización de equipos de producción, mantenimiento y refinación. Indique el tipo, la capacidad y si busca equipo nuevo o usado.",
     whatsappMessage: "Hola, quiero cotizar la compra de maquinaria pesada.",
     requestType: "equipos",
-    imageKey: "alquiler",
+    imageKey: "venta",
     trust: ["Venta", "Comercialización", "Producción", "Mantenimiento y refinación"],
     audience,
     offers: [

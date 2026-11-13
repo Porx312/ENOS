@@ -2,21 +2,31 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import {
+  Construction,
   HardHat,
   Headset,
   Package,
+  Settings,
   Wrench,
   ArrowRight,
 } from "lucide-react";
 import { CoverageMap } from "@/components/coverage-map";
 import { LeadForm } from "@/components/lead-form";
+import { MobileStickyCta } from "@/components/mobile-sticky-cta";
 import { Reveal } from "@/components/reveal";
 import { TrackView } from "@/components/track-view";
-import { differentiators, homeServices, products } from "@/lib/content";
+import { differentiators, homeFeaturedProducts, homeServices } from "@/lib/content";
 import { images } from "@/lib/images";
 import { commercialSla, company, companyRif, contactAddress, contactEmail, phoneDisplay } from "@/lib/site";
 
 const icons = [Headset, Wrench, Package, HardHat];
+
+const aboutPillars = [
+  { label: "Equipos y Maquinaria", Icon: Construction },
+  { label: "Suministros Industriales", Icon: Package },
+  { label: "Servicios Operacionales", Icon: HardHat },
+  { label: "Soluciones Integrales", Icon: Settings },
+] as const;
 
 export function HomeView() {
   const phone = phoneDisplay();
@@ -24,10 +34,20 @@ export function HomeView() {
   const address = contactAddress();
   const rif = companyRif();
 
+  const trustFacts = [
+    { label: "Foco geográfico", value: company.region },
+    { label: "Respuesta comercial", value: commercialSla },
+    {
+      label: "Identidad",
+      value: rif ? `${company.legalName} · RIF ${rif}` : company.legalName,
+    },
+  ];
+
   return (
     <>
       <TrackView line="Portada" />
-      <main>
+      <MobileStickyCta targetId="contacto" label="Pedir cotización" />
+      <main className="pb-20 lg:pb-0">
         <section id="inicio" className="group/hero relative overflow-hidden bg-paper">
           <div className="absolute inset-y-0 right-0 hidden w-[38%] bg-petroleum lg:block" aria-hidden="true" />
           <div className="relative mx-auto grid max-w-7xl items-center lg:min-h-[82vh] lg:grid-cols-[1.15fr_0.85fr] lg:gap-4 lg:px-5 lg:py-14">
@@ -49,19 +69,26 @@ export function HomeView() {
                 {company.name}
               </p>
               <h1 className="mt-3 font-display text-[1.85rem] leading-[1.08] font-extrabold tracking-tight text-petroleum uppercase sm:text-5xl lg:mt-4 lg:text-6xl">
-                Proveedor operacional para industria energética en el oriente
+                Su operación no se detiene. Nosotros lo resolvemos.
               </h1>
               <p className="mt-4 text-sm leading-6 text-muted sm:mt-5 sm:text-base sm:leading-7 lg:text-lg">
-                Alquiler, suministros, EPP y soporte en sitio. Cotización por WhatsApp según su operación — sin catálogo
-                genérico.
+                Alquiler, suministros, EPP y soporte en sitio para industria energética en el oriente. Diga qué necesita:
+                armamos la cotización con el alcance real de su campo o planta.
               </p>
+              <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-xs font-bold tracking-wide text-petroleum/80 uppercase">
+                {trustFacts.map((fact) => (
+                  <li key={fact.label} className="max-w-xs">
+                    <span className="text-orange">{fact.label}:</span> {fact.value}
+                  </li>
+                ))}
+              </ul>
               <p className="mt-3 text-sm font-bold text-petroleum">{commercialSla}</p>
               <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row">
                 <Link href="/contacto" className="btn-primary">
-                  Cotizar mi operación
+                  Pedir cotización ahora
                 </Link>
                 <Link href="/#servicios" className="btn-ghost">
-                  Ver líneas de servicio
+                  Ver cómo trabajamos
                 </Link>
               </div>
               {(rif || address) && (
@@ -121,32 +148,56 @@ export function HomeView() {
           </div>
         </section>
 
-        <section id="nosotros" className="bg-mist">
-          <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-16 lg:grid-cols-2 lg:py-20">
-            <Reveal className="relative aspect-[4/3] overflow-hidden">
-              <Image
-                src={images.about.src}
-                alt={images.about.alt}
-                fill
-                className="object-cover"
-                sizes="(max-width:1024px) 100vw, 50vw"
-              />
-              <div className="absolute right-0 bottom-0 h-16 w-16 bg-[linear-gradient(135deg,transparent_50%,#f9c513_50%)]" />
-            </Reveal>
-            <Reveal>
-              <p className="text-xs font-bold tracking-[0.18em] text-orange uppercase">Nosotros</p>
-              <h2 className="mt-3 font-display text-3xl font-extrabold tracking-tight text-petroleum uppercase sm:text-4xl">
-                Somos el aliado que tu operación necesita.
-              </h2>
-              <p className="mt-5 text-base leading-7 text-muted">
+        <section id="nosotros" className="relative overflow-hidden bg-paper">
+          <div className="relative mx-auto grid max-w-7xl lg:min-h-[560px] lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+            <Reveal className="relative z-10 flex flex-col justify-center px-5 py-14 sm:px-8 lg:py-20 lg:pr-10 lg:pl-5 xl:pl-8">
+              <div>
+                <h2 className="relative inline-block font-display text-4xl font-extrabold tracking-tight text-petroleum sm:text-5xl">
+                  Nosotros
+                  <span className="absolute -bottom-1 left-0 h-1.5 w-14 bg-orange" aria-hidden="true" />
+                </h2>
+              </div>
+              <p className="mt-8 max-w-md font-display text-2xl leading-snug font-extrabold tracking-tight text-petroleum italic sm:text-3xl lg:text-[2rem]">
+                Somos el aliado que tu{" "}
+                <span className="box-decoration-clone bg-orange px-1.5 not-italic text-petroleum">
+                  operación necesita.
+                </span>
+              </p>
+              <p className="mt-5 max-w-md text-sm leading-7 text-muted sm:text-base">
                 En Energía Nuevo Oriente trabajamos para ofrecer soluciones integrales a la industria energética y
                 petrolera, facilitando el acceso a equipos, maquinaria, suministros y servicios que contribuyen a la
                 continuidad operativa de nuestros clientes.
               </p>
-              <Link href="/empresa" className="btn-primary mt-7">
+              <ul className="mt-8 grid max-w-lg grid-cols-2 gap-4 sm:gap-5">
+                {aboutPillars.map(({ label, Icon }) => (
+                  <li key={label} className="flex flex-col items-start gap-2">
+                    <span className="inline-flex h-12 w-12 items-center justify-center rounded-md border-2 border-petroleum/20 bg-orange text-petroleum shadow-sm sm:h-14 sm:w-14">
+                      <Icon className="h-6 w-6 sm:h-7 sm:w-7" strokeWidth={1.75} aria-hidden="true" />
+                    </span>
+                    <span className="max-w-[9rem] text-xs font-bold leading-snug text-petroleum sm:text-sm">
+                      {label}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <Link href="/empresa" className="btn-primary mt-8 w-fit">
                 Conocer la empresa
               </Link>
             </Reveal>
+
+            <div className="relative min-h-[280px] sm:min-h-[360px] lg:min-h-full lg:[clip-path:polygon(10%_0,100%_0,100%_100%,0_100%)]">
+              <Image
+                src={images.about.src}
+                alt={images.about.alt}
+                fill
+                className="object-cover object-center"
+                sizes="(max-width:1024px) 100vw, 55vw"
+              />
+              <div
+                className="pointer-events-none absolute inset-y-0 left-0 hidden w-24 bg-gradient-to-r from-paper to-transparent lg:block"
+                aria-hidden="true"
+              />
+            </div>
           </div>
         </section>
 
@@ -158,8 +209,8 @@ export function HomeView() {
                 Por qué trabajar con nosotros
               </h2>
               <p className="mt-3 max-w-2xl text-muted">
-                Sin testimonios inventados: transparencia en el proceso, cobertura geográfica y respuesta comercial
-                medible.
+                Proceso claro, cobertura en el oriente y respuesta comercial medible. Cada cotización sale del alcance
+                real de su operación.
               </p>
             </Reveal>
             <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -209,11 +260,11 @@ export function HomeView() {
                 Equipos y suministros para la industria
               </h2>
               <p className="mt-3 max-w-2xl text-muted">
-                Consulte disponibilidad y condiciones. Cada solicitud se cotiza según el alcance de su operación.
+                Líneas prioritarias. Consulte disponibilidad; el resto de equipos y EPP está en cada servicio.
               </p>
             </Reveal>
             <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {products.map((product) => (
+              {homeFeaturedProducts.map((product) => (
                 <Reveal key={product.name} as="article">
                   <div className="relative h-44 overflow-hidden">
                     <Image

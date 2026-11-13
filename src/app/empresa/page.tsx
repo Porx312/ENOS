@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     title: `Empresa · ${company.name}`,
     description: company.description,
     url: `${siteUrl()}/empresa`,
-    images: [{ url: "/images/about-v2.jpg", width: 1600, height: 900, alt: company.name }],
+    images: [{ url: "/images/about-v2.webp", width: 1600, height: 900, alt: company.name }],
   },
 };
 
@@ -161,10 +161,11 @@ export default function EmpresaPage() {
             </ul>
             <p className="mt-6 text-xs leading-5 text-petroleum/60">
               {!rif
-                ? "El RIF se publica cuando se configura en producción. "
+                ? "Configure NEXT_PUBLIC_RIF en producción para mostrar el RIF aquí. "
                 : null}
-              Certificaciones y referencias de clientes se publican solo cuando la empresa las facilita. No inventamos
-              credenciales.
+              {!email || !address
+                ? "Complete también NEXT_PUBLIC_EMAIL y NEXT_PUBLIC_ADDRESS para el bloque de contacto."
+                : "Datos fiscales y de contacto publicados según la configuración de producción."}
             </p>
           </div>
           <div className="flex flex-col justify-center gap-3">
