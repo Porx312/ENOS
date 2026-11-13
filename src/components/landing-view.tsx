@@ -50,7 +50,7 @@ export function LandingView({ landing }: { landing: Landing }) {
                   alt={image.alt}
                   fill
                   className="object-contain object-bottom p-3 drop-shadow-lg sm:p-4"
-                  sizes="(max-width:1024px) 100vw, 50vw"
+                  sizes="(max-width:1024px) 0px, 50vw"
                   priority
                 />
               </div>
@@ -73,7 +73,7 @@ export function LandingView({ landing }: { landing: Landing }) {
                 alt={image.alt}
                 fill
                 className="object-contain object-bottom p-3 drop-shadow-lg sm:p-4"
-                sizes="100vw"
+                sizes="(max-width:1024px) calc(100vw - 2.5rem), 50vw"
               />
             </div>
           </div>
