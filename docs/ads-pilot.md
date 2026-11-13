@@ -16,11 +16,13 @@ https://TU-DOMINIO/alquiler/gruas?utm_source=meta&utm_medium=paid&utm_campaign=p
 
 ## P0 antes de gastar (obligatorio)
 
-1. **Identidad pública** en Vercel / `.env` de producción:
-   - `NEXT_PUBLIC_EMAIL`
-   - `NEXT_PUBLIC_ADDRESS`
-   - `NEXT_PUBLIC_RIF`
-   - `NEXT_PUBLIC_WHATSAPP_NUMBER` / `NEXT_PUBLIC_PHONE_DISPLAY`
+1. **Identidad pública** en Vercel → Settings → Environment Variables (Production):
+   - `NEXT_PUBLIC_SITE_URL=https://energia-nuevo-oriente.vercel.app`
+   - `NEXT_PUBLIC_EMAIL` (correo comercial real)
+   - `NEXT_PUBLIC_ADDRESS` (domicilio / dirección comercial)
+   - `NEXT_PUBLIC_RIF` (RIF de Energía Nuevo Oriente, S.A.)
+   - `NEXT_PUBLIC_WHATSAPP_NUMBER` / `NEXT_PUBLIC_PHONE_DISPLAY` con **código VE (58)** si el mensaje es “oriente del país” — evitar +34 en producción B2B venezolana
+   - Tras guardar: Redeploy del último deployment
 2. **Medición**
    - `NEXT_PUBLIC_GA_ID` (formato `G-…`)
    - `NEXT_PUBLIC_META_PIXEL_ID`
