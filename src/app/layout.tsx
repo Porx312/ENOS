@@ -41,6 +41,11 @@ export const metadata: Metadata = {
     template: `%s · ${company.name}`,
   },
   description: company.description,
+  icons: {
+    icon: "/LOGO.svg",
+    shortcut: "/LOGO.svg",
+    apple: "/LOGO.svg",
+  },
   openGraph: {
     locale: "es_VE",
     siteName: company.name,

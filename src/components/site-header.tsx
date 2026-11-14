@@ -47,7 +47,7 @@ export function SiteHeader() {
     >
       <div className="relative z-[71] mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-3">
         <Link href="/" className="flex min-w-0 items-center gap-2.5 sm:gap-3" onClick={() => setOpen(false)}>
-          <BrandMark className="h-9 w-9 shrink-0 sm:h-10 sm:w-10" />
+          <BrandMark className="h-8 w-auto max-w-[6.5rem] shrink-0 sm:h-10 sm:max-w-[9rem]" />
           <span className="min-w-0">
             <span className="block truncate font-display text-sm font-extrabold leading-none tracking-tight uppercase sm:text-lg">
               {company.name}
